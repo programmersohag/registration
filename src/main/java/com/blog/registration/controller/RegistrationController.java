@@ -34,6 +34,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 
 @Controller
 public class RegistrationController {
@@ -64,12 +65,39 @@ public class RegistrationController {
 
     // Registration
 
+    @GetMapping("/registration")
+    public ModelAndView showRegistrationForm(final ModelMap model) {
+        final UserDto accountDto = new UserDto();
+        model.addAttribute("user", accountDto);
+        return new ModelAndView(" registration", model);
+    }
+
     @RequestMapping(value = "/user/registration", method = RequestMethod.POST)
     @ResponseBody
     public GenericResponse registerUserAccount(@Valid final UserDto accountDto, final HttpServletRequest request) {
         final User registered = userService.registerNewUserAccount(accountDto);
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), getAppUrl(request)));
         return new GenericResponse("success");
+    }
+
+    @GetMapping("/login")
+    public ModelAndView login(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey") final Optional<String> messageKey, @RequestParam("error") final Optional<String> error) {
+        Locale locale = request.getLocale();
+        model.addAttribute("lang", locale.getLanguage());
+        messageKey.ifPresent(key -> {
+                    String message = messages.getMessage(key, null, locale);
+                    model.addAttribute("message", message);
+                }
+        );
+
+        error.ifPresent(e -> model.addAttribute("error", e));
+
+        return new ModelAndView("login", model);
+    }
+
+    @GetMapping("/homepage")
+    public String showHomePage() {
+        return "homepage";
     }
 
     @RequestMapping(value = "/registrationConfirm", method = RequestMethod.GET)
@@ -157,26 +185,11 @@ public class RegistrationController {
         return null;
     }
 
-    @GetMapping("/login")
-    public ModelAndView login(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey" ) final Optional<String> messageKey, @RequestParam("error" ) final Optional<String> error) {
-        Locale locale = request.getLocale();
-        model.addAttribute("lang", locale.getLanguage());
-        messageKey.ifPresent( key -> {
-                    String message = messages.getMessage(key, null, locale);
-                    model.addAttribute("message", message);
-                }
-        );
-
-        error.ifPresent( e ->  model.addAttribute("error", e));
-
-        return new ModelAndView("login", model);
-    }
-
     @RequestMapping(value = "/user/enableNewLoc", method = RequestMethod.GET)
     public String enableNewLoc(Locale locale, Model model, @RequestParam("token") String token) {
         final String loc = userService.isValidNewLocationToken(token);
         if (loc != null) {
-            model.addAttribute("message", messages.getMessage("message.newLoc.enabled", new Object[] { loc }, locale));
+            model.addAttribute("message", messages.getMessage("message.newLoc.enabled", new Object[]{loc}, locale));
         } else {
             model.addAttribute("message", messages.getMessage("message.error", null, locale));
         }
@@ -187,7 +200,7 @@ public class RegistrationController {
     public ModelAndView console(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey") final Optional<String> messageKey) {
 
         Locale locale = request.getLocale();
-        messageKey.ifPresent( key -> {
+        messageKey.ifPresent(key -> {
                     String message = messages.getMessage(key, null, locale);
                     model.addAttribute("message", message);
                 }
@@ -197,17 +210,17 @@ public class RegistrationController {
     }
 
     @GetMapping("/badUser")
-    public ModelAndView badUser(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey" ) final Optional<String> messageKey, @RequestParam("expired" ) final Optional<String> expired, @RequestParam("token" ) final Optional<String> token) {
+    public ModelAndView badUser(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey") final Optional<String> messageKey, @RequestParam("expired") final Optional<String> expired, @RequestParam("token") final Optional<String> token) {
 
         Locale locale = request.getLocale();
-        messageKey.ifPresent( key -> {
+        messageKey.ifPresent(key -> {
                     String message = messages.getMessage(key, null, locale);
                     model.addAttribute("message", message);
                 }
         );
 
-        expired.ifPresent( e -> model.addAttribute("expired", e));
-        token.ifPresent( t -> model.addAttribute("token", t));
+        expired.ifPresent(e -> model.addAttribute("expired", e));
+        token.ifPresent(t -> model.addAttribute("token", t));
 
         return new ModelAndView("badUser", model);
     }

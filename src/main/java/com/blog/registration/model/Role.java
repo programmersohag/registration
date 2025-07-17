@@ -1,11 +1,13 @@
 package com.blog.registration.model;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Collection;
 
 @Getter
+@Setter
 @Entity
 @Table(name= "user_role")
 public class Role {

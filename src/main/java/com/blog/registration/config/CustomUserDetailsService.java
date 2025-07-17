@@ -7,19 +7,20 @@ import com.blog.registration.model.Role;
 import com.blog.registration.model.User;
 import com.blog.registration.repository.UserRepository;
 import com.blog.registration.service.LoginAttemptService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Transactional
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -54,11 +55,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     // UTIL
 
-    private final Collection<? extends GrantedAuthority> getAuthorities(final Collection<Role> roles) {
+    private Collection<? extends GrantedAuthority> getAuthorities(final Collection<Role> roles) {
         return getGrantedAuthorities(getPrivileges(roles));
     }
 
-    private final List<String> getPrivileges(final Collection<Role> roles) {
+    private List<String> getPrivileges(final Collection<Role> roles) {
         final List<String> privileges = new ArrayList<String>();
         final List<Privilege> collection = new ArrayList<Privilege>();
         for (final Role role : roles) {

@@ -3,11 +3,13 @@ package com.blog.registration.model;
 import com.blog.registration.annotation.PasswordMatches;
 import com.blog.registration.annotation.ValidEmail;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter
+@Setter
 @PasswordMatches
 public class UserDto {
     @NotNull

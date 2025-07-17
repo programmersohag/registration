@@ -61,13 +61,13 @@
 
         </form>
         <br/> Current Locale :  <span th:utext="${#locale}"></span><br/><br/>
-        <a class="btn btn-default" th:href="@{/registration.html}" th:utext="#{label.form.loginSignUp}">signup</a>
+        <a class="btn btn-default" th:href="@{/registration}" th:utext="#{label.form.loginSignUp}">signup</a>
         <br/>
         <!--<a class="btn btn-default" th:href="@{/registrationCaptcha.html}" th:utext="#{label.form.loginSignUpCaptcha}">captcha signup</a>
         <br/><br/>
         <a class="btn btn-default" th:href="@{/registrationReCaptchaV3.html}" th:utext="#{label.form.loginSignUpReCaptchaV3}">recaptcha v3 signup</a>
         <br/><br/>-->
-        <a class="btn btn-default" th:href="@{/forgetPassword.html}" th:utext="#{message.resetPassword}">reset</a>
+        <a class="btn btn-default" th:href="@{/forgetPassword}" th:utext="#{message.resetPassword}">reset</a>
     </div>
 </div>
 </body>

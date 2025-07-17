@@ -41,6 +41,7 @@ public class WebConfig implements WebMvcConfigurer {
         cookieLocaleResolver.setDefaultLocale(Locale.ENGLISH);
         return cookieLocaleResolver;
     }
+
     @Bean
     public EmailValidator usernameValidator() {
         return new EmailValidator();
@@ -65,7 +66,12 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public JavaMailSender javaMailSender(){
+    public JavaMailSender javaMailSender() {
         return new JavaMailSenderImpl();
+    }
+
+    @Bean
+    public ActiveUserStore activeUserStore() {
+        return new ActiveUserStore();
     }
 }

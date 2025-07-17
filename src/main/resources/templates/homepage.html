@@ -7,7 +7,7 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" th:href="@{/home.html}" th:utext="#{label.pages.home.title}">home</a>
+            <a class="navbar-brand" th:href="@{/home}" th:utext="#{label.pages.home.title}">home</a>
         </div>
         <ul class="nav navbar-nav navbar-right">
             <li><a th:href="@{/logout}" th:utext="#{label.pages.logout}">logout</a> </li>
@@ -17,17 +17,13 @@
 
 <div class="container">
     <div sec:authorize="hasAuthority('WRITE_PRIVILEGE')" th:utext="#{label.pages.user.message}">user</div>
-
     <div sec:authorize="hasAuthority('WRITE_PRIVILEGE')" th:utext="#{label.pages.admin.message}"></div>
-
     <p th:if="${param.user} != null" th:text="${param.user[0]}">user</p>
-
-    <a class="btn btn-default" th:href="@{/admin.html}" th:utext="#{label.pages.admin}">admin</a>
+    <a class="btn btn-default" th:href="@{/admin}" th:utext="#{label.pages.admin}">admin</a>
     <br /> <br />
     <a th:href="@{/loggedUsers}" th:utext="#{label.pages.users.message}">View logged in users</a>
     <br />
     <a th:href="@{/loggedUsersFromSessionRegistry}" th:utext="#{label.pages.users.sessionregistry.message}">View logged in users</a>
-
 </div>
 </body>
 </html>

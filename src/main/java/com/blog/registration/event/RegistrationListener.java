@@ -37,12 +37,13 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         final String token = UUID.randomUUID().toString();
         service.createVerificationTokenForUser(user, token);
         final SimpleMailMessage email = constructEmailMessage(event, user, token);
-        mailSender.send(email);
+        System.out.println(email);
+//        mailSender.send(email);
     }
 
     //
 
-    private final SimpleMailMessage constructEmailMessage(final OnRegistrationCompleteEvent event, final User user, final String token) {
+    private SimpleMailMessage constructEmailMessage(final OnRegistrationCompleteEvent event, final User user, final String token) {
         final String recipientAddress = user.getEmail();
         final String subject = "Registration Confirmation";
         final String confirmationUrl = event.getAppUrl() + "/registrationConfirm.html?token=" + token;

@@ -13,21 +13,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-
-    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+    private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Autowired
     ActiveUserStore activeUserStore;
 
     @Override
     public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException {
-        addWelcomeCookie(gerUserName(authentication), response);
-        redirectStrategy.sendRedirect(request, response, "/homepage.html?user=" + authentication.getName());
-
+        User authUser = ((User) authentication.getPrincipal());
+        addWelcomeCookie(authUser.getFirstName(), response);
+        redirectStrategy.sendRedirect(request, response, "/homepage?user=" + authUser.getEmail());
         final HttpSession session = request.getSession(false);
         if (session != null) {
             session.setMaxInactiveInterval(30 * 60);
@@ -37,14 +38,19 @@ public class SimpleUrlAuthenticationSuccessHandler implements AuthenticationSucc
             } else {
                 username = authentication.getName();
             }
-
+            List<String> users = new ArrayList<>();
+            users.add(username);
+            if (activeUserStore == null) {
+                activeUserStore = new ActiveUserStore();
+            }
+            activeUserStore.setUsers(users);
             LoggedUser user = new LoggedUser(username, activeUserStore);
             session.setAttribute("user", user);
         }
         clearAuthenticationAttributes(request);
     }
 
-    private String gerUserName(final Authentication authentication) {
+    private String getUserName(final Authentication authentication) {
         return ((User) authentication.getPrincipal()).getFirstName();
     }
 
@@ -67,11 +73,4 @@ public class SimpleUrlAuthenticationSuccessHandler implements AuthenticationSucc
         session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
     }
 
-    public void setRedirectStrategy(final RedirectStrategy redirectStrategy) {
-        this.redirectStrategy = redirectStrategy;
-    }
-
-    protected RedirectStrategy getRedirectStrategy() {
-        return redirectStrategy;
-    }
 }

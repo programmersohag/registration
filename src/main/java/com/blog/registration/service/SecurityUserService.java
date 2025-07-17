@@ -35,4 +35,19 @@ public class SecurityUserService {
         SecurityContextHolder.getContext().setAuthentication(auth);
         return null;
     }
+
+    public String validatePasswordResetToken(String token) {
+        final PasswordResetToken passToken = passwordTokenRepository.findByToken(token);
+        if ((passToken == null)) {
+            return "invalidToken";
+        }
+        final Calendar cal = Calendar.getInstance();
+        if ((passToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            return "expired";
+        }
+        final User user = passToken.getUser();
+        final Authentication auth = new UsernamePasswordAuthenticationToken(user, null, Collections.singletonList(new SimpleGrantedAuthority("CHANGE_PASSWORD_PRIVILEGE")));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        return null;
+    }
 }

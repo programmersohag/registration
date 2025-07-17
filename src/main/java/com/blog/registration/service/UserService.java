@@ -239,4 +239,23 @@ public class UserService {
         newLocationTokenRepository.delete(locToken);
         return userLoc.getCountry();
     }
+
+    public void addUserLocation(User user, String ip) {
+
+        if(!isGeoIpLibEnabled()) {
+            return;
+        }
+
+        try {
+            final InetAddress ipAddress = InetAddress.getByName(ip);
+            final String country = databaseReader.country(ipAddress)
+                    .getCountry()
+                    .getName();
+            UserLocation loc = new UserLocation(country, user);
+            loc.setEnabled(true);
+            userLocationRepository.save(loc);
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
