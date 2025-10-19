@@ -35,7 +35,7 @@ public class UserService {
     private final NewLocationTokenRepository newLocationTokenRepository;
     @Autowired
     @Qualifier("GeoIPCountry")
-    private DatabaseReader databaseReader;
+    private DatabaseReader countryDatabaseReader;
     @Autowired
     private Environment env;
     public static final String TOKEN_INVALID = "invalidToken";
@@ -194,13 +194,13 @@ public class UserService {
 
     public NewLocationToken isNewLoginLocation(String username, String ip) {
 
-        if(!isGeoIpLibEnabled()) {
+        if (!isGeoIpLibEnabled()) {
             return null;
         }
 
         try {
             final InetAddress ipAddress = InetAddress.getByName(ip);
-            final String country = databaseReader.country(ipAddress)
+            final String country = countryDatabaseReader.country(ipAddress)
                     .getCountry()
                     .getName();
             System.out.println(country + "====****");
@@ -242,13 +242,12 @@ public class UserService {
 
     public void addUserLocation(User user, String ip) {
 
-        if(!isGeoIpLibEnabled()) {
+        if (!isGeoIpLibEnabled()) {
             return;
         }
-
         try {
             final InetAddress ipAddress = InetAddress.getByName(ip);
-            final String country = databaseReader.country(ipAddress)
+            final String country = countryDatabaseReader.country(ipAddress)
                     .getCountry()
                     .getName();
             UserLocation loc = new UserLocation(country, user);

@@ -17,11 +17,15 @@ public class LoginNotificationConfig {
         return new Parser();
     }
 
-    @Bean(name="GeoIPCity")
-    public DatabaseReader databaseReader() throws IOException {
-        File database = ResourceUtils
-                .getFile("classpath:maxmind/GeoLite2-City.mmdb");
-        return new DatabaseReader.Builder(database)
-                .build();
+    @Bean(name = "GeoIPCity")
+    public DatabaseReader cityDatabaseReader() throws IOException {
+        final File resource = new File(this.getClass().getClassLoader().getResource("maxmind/GeoLite2-City.mmdb").getFile());
+        return new DatabaseReader.Builder(resource).build();
+    }
+
+    @Bean(name = "GeoIPCountry")
+    public DatabaseReader countryDatabaseReader() throws IOException {
+        final File resource = new File(this.getClass().getClassLoader().getResource("maxmind/GeoLite2-Country.mmdb").getFile());
+        return new DatabaseReader.Builder(resource).build();
     }
 }

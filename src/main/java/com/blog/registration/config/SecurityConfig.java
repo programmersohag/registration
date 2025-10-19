@@ -149,15 +149,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new CustomRememberMeServices("theKey", userDetailsService, new InMemoryTokenRepositoryImpl());
     }
 
-    @Bean(name = "GeoIPCountry")
-    public DatabaseReader databaseReader() throws IOException {
-        final File resource = new File(this.getClass()
-                .getClassLoader()
-                .getResource("maxmind/GeoLite2-Country.mmdb")
-                .getFile());
-        return new DatabaseReader.Builder(resource).build();
-    }
-
     @Bean
     public RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
